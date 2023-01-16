@@ -1,0 +1,2 @@
+#!/bin/sh
+aws dynamodb query --table-name pad-places_attestations --key-conditions file://keys.json

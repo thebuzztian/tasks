@@ -1,0 +1,10 @@
+{
+  "trusteeId": {
+    "AttributeValueList": [
+      {
+        "S": "trustee_cf9dbd0b7df4a898"
+      }
+    ],
+    "ComparisonOperator": "EQ"
+  }
+}

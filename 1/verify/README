@@ -1,0 +1,2 @@
+1. Populate an .env file with the credentials (see .env.example for a scaffold).
+2. Run the "./run" script.

@@ -1,0 +1,23 @@
+{
+  "name": "verify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "verify.js",
+  "scripts": {
+    "lint": "npx eslint verify.js",
+    "run": "node verify.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "8.32.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.245.0",
+    "asn1.js": "5.4.1",
+    "axios": "1.2.2",
+    "dotenv": "16.0.3",
+    "url": "0.11.0"
+  }
+}

@@ -1,0 +1,7 @@
+.env
+node_modules/
+cache/
+artifacts/
+task.pdf
+info
+2/source-code/
