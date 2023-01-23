@@ -1,0 +1,2 @@
+#!/bin/sh
+npx hardhat verify 0x1EDC21c25B2b5ae396637f028f4fFea831F4eDd9 --network mumbai

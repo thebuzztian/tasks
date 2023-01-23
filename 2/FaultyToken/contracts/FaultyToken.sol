@@ -14,111 +14,70 @@ contract FaultyToken is
     bytes32 public constant CFO_ROLE = keccak256("CFO_ROLE");
 
     /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor(bool disable) {
-        if(disable){
-            _disableInitializers();
-        }
+    constructor() {
+        _disableInitializers();
     }
 
     function initialize() external initializer {
-        __ERC165_init();
-        __Context_init();
-        __AccessControl_init();
         __ERC20_init("FaultyToken", "FTX");
         __ERC20Pausable_init();
+        __AccessControl_init();
+        __Context_init();
 
-        _grantRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setRoleAdmin(CFO_ROLE, DEFAULT_ADMIN_ROLE);
     }
 
     function mint(address to, uint256 amount) external {
         require(
-            hasRole(CFO_ROLE, _msgSender()),
+            hasRole(CFO_ROLE, msg.sender),
             "Not authorised."
         );
         _mint(to, amount);
     }
 
-    function burn(address from, uint256 amount) external {
+    function burn(address from, uint256 amount) internal {
         require(
-            hasRole(CFO_ROLE, _msgSender()),
+            hasRole(CFO_ROLE, msg.sender),
             "Not authorised."
         );
         _burn(from, amount);
     }
 
-    function _checkRoleAllowed(bytes32 role) private pure {
-      require(
-        role == DEFAULT_ADMIN_ROLE || role == CFO_ROLE,
-        "Invalid role."
-      );
-    }
-
-    function _notNull(address account) private pure {
-        require(
-            account != address(0),
-            "Null address not allowed here."
-        );
-    }
-
-    function grantRole(bytes32 role, address account) public override whenNotPaused {
-        _checkRoleAllowed(role);
-        _notNull(account);
-
-        require(
-            !(
-                ((role == CFO_ROLE) && hasRole(DEFAULT_ADMIN_ROLE, account)) ||
-                ((role == DEFAULT_ADMIN_ROLE) && hasRole(CFO_ROLE, account))
-            ),
-            "An account cannot be both an admin and a CFO."
-        );
-
-        super.grantRole(role, account);
-    }
-
-    function revokeRole(bytes32 role, address account)
+    function transfer(address to, uint256 value)
         public
         override
-        whenNotPaused
-    {
-        _checkRoleAllowed(role);
-        _notNull(account);
-
-        require(
-            !(role == DEFAULT_ADMIN_ROLE && account == _msgSender()),
-            "Admins are not allowed to renounce their own admin role."
-        );
-        super.revokeRole(role, account);
-    }
-
-    function renounceRole(bytes32, address) public pure override {
-        revert("Operation not permitted.");
-    }
-
-    function _beforeTokenTransfer(address from, address to, uint256 amount)
-        internal
-        virtual
-        override
+        returns (bool)
     {
         require(
-            amount < (10000 * (10 ** decimals())),
+            value < 10000,
             "Transfer is too large."
         );
-
-        super._beforeTokenTransfer(from, to, amount);
+        
+        return super.transfer(to, value);
     }
 
-    function pause() external {
+
+    function grantRole(bytes32 role, address account) public override {
         require(
-            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            !((role == CFO_ROLE) && (msg.sender == account)),
+            "Cannot grant this role."
+        );
+
+        _grantRole(role, account);
+    }
+
+    function pause() external whenNotPaused {
+        require(
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
             "Not authorised."
         );
         _pause();
     }
 
-    function unpause() external {
+    function unpause() external whenPaused {
         require(
-            hasRole(DEFAULT_ADMIN_ROLE, _msgSender()),
+            hasRole(DEFAULT_ADMIN_ROLE, msg.sender),
             "Not authorised."
         );
         _unpause();

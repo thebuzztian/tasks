@@ -2,23 +2,26 @@ require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config();
 require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
+require('@openzeppelin/hardhat-upgrades');
+
+const { PRIVATE_KEY_1, PRIVATE_KEY_2, PRIVATE_KEY_CODE_CHALLENGE, URL, POLYGON_API_TOKEN } = process.env;
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
-/*
-  defaultNetwork: "polygon_mumbai",
+  //defaultNetwork: "hardhat",
   networks: {
-    hardhat: {
+    mumbai: {
+      url: URL,
+      accounts: [ PRIVATE_KEY_1, PRIVATE_KEY_2, PRIVATE_KEY_CODE_CHALLENGE ]
     },
-    polygon_mumbai: {
-      url: "https://rpc-mumbai.maticvigil.com",
-      accounts: [process.env.PRIVATE_KEY]
+    mumbai_code_challenge: {
+      url: URL,
+      accounts: [ PRIVATE_KEY_CODE_CHALLENGE ]
     }
   },
   etherscan: {
-    apiKey: process.env.POLYGONSCAN_API_KEY
+    apiKey: POLYGON_API_TOKEN,
   },
-  */
   solidity: {
     version: "0.8.17",
     settings: {
